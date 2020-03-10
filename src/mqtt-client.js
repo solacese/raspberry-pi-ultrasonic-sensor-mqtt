@@ -6,7 +6,7 @@
 import mqtt from "mqtt";
 import produce from "immer";
 
-function MqttClient({ hostUrl, username, password }) {
+function MqttClient({ hostUrl, username, password, clientId = username }) {
   let client = null;
 
   // connects client to message broker and ensures connack is received
@@ -14,7 +14,8 @@ function MqttClient({ hostUrl, username, password }) {
     return new Promise((resolve, reject) => {
       client = mqtt.connect(hostUrl, {
         username: username,
-        password: password
+        password: password,
+        clientId: clientId
       });
       client.on("connect", function onConnAck(connAck) {
         resolve(client);

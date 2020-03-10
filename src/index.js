@@ -21,7 +21,8 @@ async function run() {
   let mqttClientConfig = {
     hostUrl: process.env.SOLACE_MQTT_HOST_URL,
     username: process.env.SOLACE_USERNAME,
-    password: process.env.SOLACE_PASSWORD
+    password: process.env.SOLACE_PASSWORD,
+    clientId: process.env.MQTT_CLIENT_ID
   };
 
   console.log("=== Starting MQTT producer ===");
