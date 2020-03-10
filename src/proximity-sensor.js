@@ -17,8 +17,6 @@ function ProximitySensor() {
         io: new PiIO()
       });
 
-      board.samplingInterval(samplingIntervalMs);
-
       board.on("ready", () => {
         sensor = new Proximity({
           controller: PiIO.HCSR04,
