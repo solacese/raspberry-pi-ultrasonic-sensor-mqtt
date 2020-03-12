@@ -36,6 +36,7 @@ async function run() {
     console.log("MQTT client connected to Solace.");
   } catch (err) {
     console.error(err);
+    process.exit();
   }
 
   let proximitySensor;
@@ -47,6 +48,7 @@ async function run() {
     console.log("Connected to the board!");
   } catch (err) {
     console.error(err);
+    process.exit();
   }
 
   proximitySensor.addProximityHandler(process.env.MIN_RANGE_CM, process.env.MAX_RANGE_CM, measurement => {
