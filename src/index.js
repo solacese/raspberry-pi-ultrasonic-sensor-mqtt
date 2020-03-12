@@ -42,7 +42,7 @@ async function run() {
   let proximitySensor;
 
   try {
-    proximitySensor = new ProximitySensor(process.env.SAMPLING_INTERVAL_MS);
+    proximitySensor = new ProximitySensor();
     console.log("Connecting to board...");
     await proximitySensor.connectToBoard();
     console.log("Connected to the board!");
