@@ -24,7 +24,7 @@ function ProximitySensor() {
           echoPin: "GPIO24"
         });
 
-        resolve(sensor);
+        resolve();
       });
     });
   }
