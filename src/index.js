@@ -6,55 +6,27 @@
 // polyfill async
 import "core-js";
 import "regenerator-runtime";
-// load env variables
-import dotenv from "dotenv";
-
-let result = dotenv.config();
-if (result.error) {
-  throw result.error;
-}
-import MqttClient from "./mqtt-client";
-import ProximitySensor from "./proximity-sensor";
+import { Board, Proximity } from "johnny-five";
+const PiIO = require("pi-io");
 
 async function run() {
   // initialize and connect mqtt client
-  let mqttClientConfig = {
-    hostUrl: process.env.SOLACE_MQTT_HOST_URL,
-    username: process.env.SOLACE_USERNAME,
-    password: process.env.SOLACE_PASSWORD,
-    clientId: process.env.MQTT_CLIENT_ID
-  };
+  let board = new Board({
+    io: new PiIO()
+  });
 
-  console.log("=== Starting MQTT producer ===");
+  let sensor = null;
 
-  let mqttClient;
+  board.on("ready", () => {
+    sensor = new Proximity({
+      controller: PiIO.HCSR04,
+      triggerPin: "GPIO23",
+      echoPin: "GPIO24"
+    });
+  });
 
-  try {
-    mqttClient = MqttClient(mqttClientConfig);
-    console.log("Connecting MQTT client to Solace...");
-    await mqttClient.connect();
-    console.log("MQTT client connected to Solace.");
-  } catch (err) {
-    console.error(err);
-    process.exit();
-  }
-
-  let proximitySensor;
-
-  try {
-    proximitySensor = new ProximitySensor();
-    console.log("Connecting to board...");
-    await proximitySensor.connectToBoard();
-    console.log("Connected to the board!");
-  } catch (err) {
-    console.error(err);
-    process.exit();
-  }
-
-  proximitySensor.addProximityHandler(process.env.MIN_RANGE_CM, process.env.MAX_RANGE_CM, measurement => {
-    let measurementJson = JSON.stringify(measurement);
-    console.log(`Distance measurement: ${measurementJson}`);
-    mqttClient.send("SOLACE/DISTANCE/MEASUREMENT", measurementJson);
+  sensor.on("data", measurement => {
+    console.log(`Sensor measurement: ${JSON.stringify(measurement)}`);
   });
 }
 
