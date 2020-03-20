@@ -1,6 +1,7 @@
 /**
  * index.js
  *
+ * @author Thomas Kunnumpurath
  */
 
 // polyfill async
@@ -42,6 +43,7 @@ async function run() {
   let proximitySensor;
 
   try {
+    //Connect to the Raspberry PI
     proximitySensor = new ProximitySensor();
     console.log("Connecting to board...");
     await proximitySensor.connectToBoard();
@@ -54,7 +56,8 @@ async function run() {
   proximitySensor.addProximityHandler(process.env.MIN_RANGE_CM, process.env.MAX_RANGE_CM, measurement => {
     let measurementJson = JSON.stringify(measurement);
     console.log(`Distance measurement: ${measurementJson}`);
-    mqttClient.send("SOLACE/DISTANCE/MEASUREMENT", measurementJson);
+    //Publish a message on the topic ${SENSOR_ID}/DISTANCE/MEASUREMENT
+    mqttClient.send(`${mqttClientConfig.clientId}/DISTANCE/MEASUREMENT`, measurementJson);
   });
 }
 

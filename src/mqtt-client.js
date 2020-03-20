@@ -6,7 +6,7 @@
 import mqtt from "mqtt";
 import produce from "immer";
 
-function MqttClient({ hostUrl, username, password, clientId = username }) {
+function MqttClient({ hostUrl, username, password, clientId }) {
   let client = null;
 
   // connects client to message broker and ensures connack is received
